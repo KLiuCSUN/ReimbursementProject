@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+  
+  <title>Home</title>
+  <!-- if IE, use latest rendering -->
+  <meta http-equiv ="X-UA-Compatible" content="IE=edge">
+</head>
+<body>
+  <div class="container"> <!-- Add space around text and underline-->
+    <div class="page-header">
+      <h1>Employee Home</h1>
+    </div>
+    <table id="Empinfo" class="table">
+      <tr style="border:2px solid black;">
+        <th>Employee Info:</th> <th><a href=#>Log Out</a></th>
+      </tr>
+      <tr>
+        <td style="border:2px solid black;">Employee Name:</td><td id="empname" style="border:2px solid black;">DUMMY</td>
+      </tr>
+      <tr>
+        <td style="border:2px solid black;">Employee Email:</td><td id="empmail" style="border:2px solid black;">DUMMY</td>
+      </tr>
+    </table>
+  
+  <form>
+    <div class="page-header">
+      <h1>Submit New Requests</h1>
+    </div>
+  <div class="form-group">
+    <label for="exampleTextarea">Description</label>
+    <textarea class="form-control" id="reimbdesc" rows="3">Dummy Text</textarea>
+  </div>
+  <div class="form-group">
+    <label for="exampleInputFile">Upload File</label>
+    <input type="file" class="form-control-file" id="fileIn" aria-describedby="file">
+    <small id="fileHelp" class="form-text text-muted">Upload file here.</small>
+  </div>
+  <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+  <div class="page-header">
+      <h1>Existing Requests</h1>
+    </div>
+  <table class="table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Date Submitted</th>
+      <th>Date Recieved</th>
+      <th>Amount</th>
+    </tr>
+  </thead>
+  <tbody id="toReplace">
+    <tr>
+      <th scope="row">1</th>
+      <td>Dummy</td>
+      <td>Dummy</td>
+      <td>Dummy</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+</body>
+</html>
