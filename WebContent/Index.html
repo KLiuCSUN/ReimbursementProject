@@ -10,22 +10,159 @@
   <meta http-equiv ="X-UA-Compatible" content="IE=edge">
 </head>
 <body>
+  
   <div class="container"> <!-- Add space around text and underline-->
     <div class="page-header">
       <h1>Reimbursements</h1>
     </div>
+    <div class="btn-group btn-group-lg" role="group" aroa=labels="...">
+        <button type="button" class="btn btn-default" onclick="showlogin()">Login</button>
+        <button type="button" class="btn btn-default" onclick="showreg()">Register</button>
+    </div>
+    <div id="LoginPage">
       <h1>Login: </h1>
-	<form action="hello" method="login">
-      Username: </br><input type = "text" name = "n1"><br/>
-      Password: </br><input type = "text" name = "n2"><br/>
-      Manager?:
+	<form name="LoginInfo">
+     <div class="form-group">
+      <label for="textinput" class="col-form-label">Username*</label>
+       <div class="col-10">
+        <input class="form-control" type="text" id="user" name="user" placeholder="Username" required>
+       </div>
+     </div>
+     <div class="form-group">
+      <label for="InputPassword1">Password*</label>
+      <input type="password" class="form-control" id="pass" name="pass" placeholder="Password" required>
+     </div>
+      <label for="InputManager">Are you a manager?</label>
       <select id="managerSelect" name="managerSelect">
     <option value="n">No</option>
     <option value="y">Yes</option>
     </select></br>
-		<input type="submit" value="Login"/>
+  <button onclick="storeinfo()" class="btn btn-primary">Submit</button>
 	</form>
     </span>
   </div>
+  
+  <div id="RegisterPage" style="display: none;">
+      <h1>Register: </h1>
+	<form name="regInfo">
+     <div class="form-group">
+      <label for="textinput" class="col-form-label">Username*</label>
+       <div class="col-10">
+        <input class="form-control" type="text" id="user1" name="user1" placeholder="Username">
+       </div>
+     </div>
+      <div class="form-group">
+      <label for="textinput" class="col-form-label">E-Mail*</label>
+       <div class="col-10">
+        <input class="form-control" type="email" id="email" name="email" placeholder="Example@abc.com">
+       </div>
+     </div>
+     <div class="form-group">
+      <label for="InputPassword1">Password*</label>
+      <input type="password" class="form-control" id="pass1" name="pass1" placeholder="Password" required>
+     </div>
+      <div class="form-group">
+      <label for="InputPassword1"> Confirm Password*</label>
+      <input type="password" class="form-control" id="pass2" name="pass2" placeholder="Password" required>
+     </div>
+      </br>
+  <button onclick="register()" class="btn btn-primary">Submit</button>
+	</form>
+    </span>
+  </div>
+  </div>
 </body>
+<script>
+let BoolAccExists = "false";
+  
+function register(){
+    var form = document.forms.namedItem("regInfo");
+	var data = new formData(form);
+	let xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		console.log(this.readyState);
+		if (this.readyState === 4 && this.status === 200){
+			BoolAccExists = xhttp.responseText; //Looking for a STRING return of "true" or "false" True for success of registration.
+            if(BoolAccExists === "false"){
+              alert("Registration failed. Username and/or Email already taken.");
+            } else{
+              alert("Registration complete.")
+            }
+		}
+	};
+	xhttp.open("GET", "register", true);
+	xhttp.send(data);
+}
+  
+  
+  
+function storeinfo(){
+    BoolAccExists = "false";
+	var user = document.getElementById("user");
+	var pass = document.getElementById("pass");
+	var manager = document.getElementById("managerSelect");
+	if(user.value != null && pass.value!= null){
+	sessionStorage.user = user.value;
+	sessionStorage.pass = pass.value;
+	sessionStorage.manager = manager.value;
+	checkexistance(); //checks if the account exists.
+	if (BoolAccExists === "true"){
+		if (manager === n){
+			window.location.href = 'Employee.html';
+		}
+		else{
+			window.location.href = 'Manager.html';
+		}
+	}
+	else{
+		sessionStorage.removeItem("user");
+		sessionStorage.removeItem("pass");
+		alert("User does not exist");
+      window.location.href = 'Index.html';
+	}
+	}
+	else{
+		alert("User and Password fields must both be filled");
+	}
+  window.location.href = 'Index.html';
+}
+
+function checkexistance(){
+	var form = document.forms.namedItem("LoginInfo");
+	var data = new formData(form);
+	let xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		console.log(this.readyState);
+		if (this.readyState === 4 && this.status === 200){
+			BoolAccExists = xhttp.responseText; //Looking for a STRING return of "true" or "false"
+		}
+	};
+	xhttp.open("GET", "login", true);
+	xhttp.send(data);
+	
+}
+  
+  function showlogin(){
+    document.getElementById("LoginPage").style.display = "block";
+    document.getElementById("RegisterPage").style.display = "none";
+  }
+
+  function showreg(){
+    document.getElementById("LoginPage").style.display = "none";
+    document.getElementById("RegisterPage").style.display = "block";
+  }
+  var password = document.getElementById("pass1")
+  , confirm_password = document.getElementById("pass2");
+
+function validatePassword(){
+  if(password.value != confirm_password.value) {
+    confirm_password.setCustomValidity("Passwords Don't Match");
+  } else {
+    confirm_password.setCustomValidity('');
+  }
+}
+
+password.onchange = validatePassword;
+confirm_password.onkeyup = validatePassword;
+</script>
 </html>

@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   
-  <title>Home</title>
+  <title>Manager Home</title>
   <!-- if IE, use latest rendering -->
   <meta http-equiv ="X-UA-Compatible" content="IE=edge">
 </head>
-<body>
+<body onload="onLoad()">
   <div class="container"> <!-- Add space around text and underline-->
     <div class="page-header">
-      <h1>Employee Home</h1>
+      <h1>Manager Home</h1>
     </div>
     <table id="Empinfo" class="table">
       <tr style="border:2px solid black;">
@@ -49,8 +49,9 @@
     <tr>
       <th>#</th>
       <th>Date Submitted</th>
-      <th>Date Recieved</th>
+      <th>Status</th>
       <th>Amount</th>
+      <th>Action</th>
     </tr>
   </thead>
   <tbody id="toReplace">
@@ -59,12 +60,26 @@
       <td>Dummy</td>
       <td>Dummy</td>
       <td>Dummy</td>
+      <td><a href="#" id="row1" onclick="approve(1)">Approve</a></td>
     </tr>
   </tbody>
 </table>
 </div>
 </body>
 <script>
+  function approve(var i){
+    let xhttp = new XMLHttpRequest();
+    var data = new formData();
+	data.append("id", i);
+	xhttp.onreadystatechange = function() {
+		console.log(this.readyState);
+		if (this.readyState === 4 && this.status === 200){
+			alert(xhttp.responseText);
+		}
+	};
+	xhttp.open("GET", "Approve", true);
+	xhttp.send();
+  }
 function onLoad(){
 	if(!sessionStorage.user){
 		logout();
@@ -79,8 +94,8 @@ function onLoad(){
 			document.getElementById("toReplace").innerHTML = xhttp.responseText;
 		}
 	};
-	xhttp.open("GET", "GetListE", true);
-	xhttp.send(data);
+	xhttp.open("GET", "GetListM", true);
+	xhttp.send();
 	
 	
 	let xhttp2 = new XMLHttpRequest();
@@ -94,7 +109,8 @@ function onLoad(){
 	xhttp2.open("GET", "GetUserInfo", true);
 	xhttp2.send(data);
 }
-function logout(){
+  
+  function logout(){
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("pass");
     sessionStorage.removeItem("manager");

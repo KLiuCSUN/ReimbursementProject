@@ -11,11 +11,34 @@
   </welcome-file-list>
   <servlet>
   <servlet-name>Login</servlet-name>
-<servlet-class>com.revature.reimbursements.Login</servlet-class>
+<servlet-class>P L A C E H O L D E R</servlet-class>
 </servlet>
-
 <servlet-mapping>
 	<servlet-name>Login</servlet-name>
-	<url-pattern>/login</url-pattern>
+	<url-pattern>/Login</url-pattern>
+</servlet-mapping>
+<servlet>
+  <servlet-name>GetListE</servlet-name>
+<servlet-class>P L A C E H O L D E R</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>GetListE</servlet-name>
+	<url-pattern>/GetListE</url-pattern>
+</servlet-mapping>
+<servlet>
+  <servlet-name>GetListM</servlet-name>
+<servlet-class>P L A C E H O L D E R</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>GetListM</servlet-name>
+	<url-pattern>/GetListM</url-pattern>
+</servlet-mapping>
+<servlet>
+  <servlet-name>GetUserInfo</servlet-name>
+<servlet-class>P L A C E H O L D E R</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>GetUserInfo</servlet-name>
+	<url-pattern>/GetUserInfo</url-pattern>
 </servlet-mapping>
 </web-app>
