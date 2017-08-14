@@ -6,7 +6,7 @@ import com.broovin.beans.Reimbursement;
 import com.broovin.beans.User;
 
 public interface SystemDAO {
-	public boolean userLogin(String username, String password);
+	public boolean userLogin(String username, String password, String isManager) throws ClassNotFoundException;
 	public boolean submitRequest(Reimbursement reimbursement);
 	public Reimbursement[] viewReimbursement(User user, int reimbursementType);
 	public boolean updateInfo(User user);
@@ -14,4 +14,5 @@ public interface SystemDAO {
 	public Reimbursement[] viewAllReimbursements(int reimbursementType);
 	public boolean handleReimbursementRequests(Reimbursement reimbursement);
 	public User viewSingleEmployee( int user_ID);
+
 }

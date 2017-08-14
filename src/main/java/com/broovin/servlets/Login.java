@@ -18,19 +18,17 @@ public class Login extends HttpServlet {
 		throws ServletException, IOException {
 			PrintWriter out = response.getWriter();
 			String username = request.getParameter("user");
-			System.out.println(username);
 			String password = request.getParameter("pass");
-			System.out.println(password);
 			String isManager = request.getParameter("managerStatus");
 			boolean user = false;
 			try {
-				user = dao.userLogin(username, password);
+				user = dao.userLogin(username, password, isManager);
 				
 			} catch(Exception e) {
 				e.printStackTrace();
 			}
 			if(user) {
-				out.write("true");
+				out.write("<script></script>");
 			} else {
 				out.write("false");
 			}

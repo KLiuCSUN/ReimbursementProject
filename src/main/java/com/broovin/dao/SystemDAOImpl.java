@@ -7,14 +7,14 @@ import java.util.List;
 import com.broovin.beans.Reimbursement;
 import com.broovin.beans.User;
 import com.broovin.util.ConnectionUtil;
+import oracle.jdbc.driver.OracleDriver;
 
 public class SystemDAOImpl implements SystemDAO{
 	@Override
-	public boolean userLogin(String username, String password) {
+	public boolean userLogin(String username, String password, String isManager) throws ClassNotFoundException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try(Connection conn = ConnectionUtil.getConnection()) {
-			System.out.println("Got to connect.");
 			String sql = "SELECT * FROM USERS WHERE U_USERNAME = ? AND U_PASSWORD = ?" ;
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1, username);
