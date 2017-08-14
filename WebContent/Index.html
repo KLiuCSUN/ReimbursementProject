@@ -10,7 +10,6 @@
   <meta http-equiv ="X-UA-Compatible" content="IE=edge">
 </head>
 <body>
-  
   <div class="container"> <!-- Add space around text and underline-->
     <div class="page-header">
       <h1>Reimbursements</h1>
@@ -21,7 +20,7 @@
     </div>
     <div id="LoginPage">
       <h1>Login: </h1>
-	<form name="LoginInfo">
+	<form name="LoginInfo" action="Login" method="get">
      <div class="form-group">
       <label for="textinput" class="col-form-label">Username*</label>
        <div class="col-10">
@@ -37,14 +36,14 @@
     <option value="n">No</option>
     <option value="y">Yes</option>
     </select></br>
-  <button onclick="storeinfo()" class="btn btn-primary">Submit</button>
+  <input type="submit" class="btn btn-primary" value="Log in"/>
 	</form>
     </span>
   </div>
   
   <div id="RegisterPage" style="display: none;">
       <h1>Register: </h1>
-	<form name="regInfo">
+	<form name="regInfo" action="Register">
      <div class="form-group">
       <label for="textinput" class="col-form-label">Username*</label>
        <div class="col-10">
@@ -66,81 +65,14 @@
       <input type="password" class="form-control" id="pass2" name="pass2" placeholder="Password" required>
      </div>
       </br>
-  <button onclick="register()" class="btn btn-primary">Submit</button>
+  <input type="submit" value="Register" class="btn btn-primary"/>
 	</form>
     </span>
   </div>
   </div>
 </body>
 <script>
-let BoolAccExists = "false";
-  
-function register(){
-    var form = document.forms.namedItem("regInfo");
-	var data = new formData(form);
-	let xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			BoolAccExists = xhttp.responseText; //Looking for a STRING return of "true" or "false" True for success of registration.
-            if(BoolAccExists === "false"){
-              alert("Registration failed. Username and/or Email already taken.");
-            } else{
-              alert("Registration complete.")
-            }
-		}
-	};
-	xhttp.open("GET", "register", true);
-	xhttp.send(data);
-}
-  
-  
-  
-function storeinfo(){
-    BoolAccExists = "false";
-	var user = document.getElementById("user");
-	var pass = document.getElementById("pass");
-	var manager = document.getElementById("managerSelect");
-	if(user.value != null && pass.value!= null){
-	sessionStorage.user = user.value;
-	sessionStorage.pass = pass.value;
-	sessionStorage.manager = manager.value;
-	checkexistance(); //checks if the account exists.
-	if (BoolAccExists === "true"){
-		if (manager === n){
-			window.location.href = 'Employee.html';
-		}
-		else{
-			window.location.href = 'Manager.html';
-		}
-	}
-	else{
-		sessionStorage.removeItem("user");
-		sessionStorage.removeItem("pass");
-		alert("User does not exist");
-      window.location.href = 'Index.html';
-	}
-	}
-	else{
-		alert("User and Password fields must both be filled");
-	}
-  window.location.href = 'Index.html';
-}
 
-function checkexistance(){
-	var form = document.forms.namedItem("LoginInfo");
-	var data = new formData(form);
-	let xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			BoolAccExists = xhttp.responseText; //Looking for a STRING return of "true" or "false"
-		}
-	};
-	xhttp.open("GET", "login", true);
-	xhttp.send(data);
-	
-}
   
   function showlogin(){
     document.getElementById("LoginPage").style.display = "block";

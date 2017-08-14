@@ -11,11 +11,19 @@
   </welcome-file-list>
   <servlet>
   <servlet-name>Login</servlet-name>
-<servlet-class>P L A C E H O L D E R</servlet-class>
+<servlet-class>com.broovin.servlets.Login</servlet-class>
 </servlet>
 <servlet-mapping>
 	<servlet-name>Login</servlet-name>
 	<url-pattern>/Login</url-pattern>
+</servlet-mapping>
+<servlet>
+  <servlet-name>Register</servlet-name>
+<servlet-class>com.broovin.servlets.Register</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>Register</servlet-name>
+	<url-pattern>/Register</url-pattern>
 </servlet-mapping>
 <servlet>
   <servlet-name>GetListE</servlet-name>
