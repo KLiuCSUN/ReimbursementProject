@@ -14,5 +14,5 @@ public interface SystemDAO {
 	public Reimbursement[] viewAllReimbursements(int reimbursementType);
 	public boolean handleReimbursementRequests(Reimbursement reimbursement);
 	public User viewSingleEmployee( int user_ID);
-
+	public boolean register(String username, String password, String email);
 }

@@ -20,9 +20,12 @@ public class SystemDAOImpl implements SystemDAO{
 			pstmt.setString(1, username);
 			pstmt.setString(2, password);
 			rs = pstmt.executeQuery();
+			rs.next();
 			if(rs == null){
+				System.out.println(rs.getString("U_USERNAME"));
             	return false;
             }
+			System.out.println(rs.getString("U_USERNAME"));
 			return true;
 		} catch(SQLException e) {
 			e.printStackTrace();	
@@ -35,6 +38,38 @@ public class SystemDAOImpl implements SystemDAO{
         		}
 		 }     
 		return false;
+	}
+	@Override
+	public boolean register(String username, String password, String email) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql;
+			sql = "SELECT * FROM USERS WHERE U_USERNAME = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			rs = pstmt.executeQuery();
+			if(rs.next()) {
+				return false;
+			}
+			sql = "BEGIN PR_CREATE_USER2(?, ?, ?); END;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			pstmt.setString(2, password);
+			pstmt.setString(3, email);
+			pstmt.executeQuery();
+			return true;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+			if (rs != null) {
+        			try { rs.close(); } catch(SQLException e) { e.printStackTrace(); }
+        		}
+		 }
 	}
 
 	@Override
