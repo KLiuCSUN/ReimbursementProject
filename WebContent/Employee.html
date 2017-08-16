@@ -9,7 +9,7 @@
   <!-- if IE, use latest rendering -->
   <meta http-equiv ="X-UA-Compatible" content="IE=edge">
 </head>
-<body>
+<body onload="onLoad()">
   <div class="container"> <!-- Add space around text and underline-->
     <div class="page-header">
       <h1>Employee Home</h1>
@@ -26,19 +26,25 @@
       </tr>
     </table>
   
-  <form>
+  <form action="Submit" method="post">
     <div class="page-header">
       <h1>Submit New Requests</h1>
     </div>
+     <div class="form-group">
+      <label for="exampleTextarea">Amount</label><br/>
+      $<input type="number" value="10.00" min="0" step=".01" data-number-to-fixed="2" data-number-stepfactor="100" class="currency" id="amount" name="amount" />
+    </div>
+  <div class="form-group">
   <div class="form-group">
     <label for="exampleTextarea">Description</label>
-    <textarea class="form-control" id="reimbdesc" rows="3">Dummy Text</textarea>
+    <textarea class="form-control" id="reimbdesc" name="reimbdesc" rows="3">Dummy Text</textarea>
   </div>
   <div class="form-group">
-    <label for="exampleInputFile">Upload File</label>
-    <input type="file" class="form-control-file" id="fileIn" aria-describedby="file">
+    <label for="exampleInputFile">Upload File (BETA)</label>
+    <input type="file" class="form-control-file" id="fileIn" name="fileIn" aria-describedby="file">
     <small id="fileHelp" class="form-text text-muted">Upload file here.</small>
   </div>
+    <input type="number" name="HiddenID" id="HiddenID" style="display:none;"/>
   <button type="submit" class="btn btn-primary">Submit</button>
 </form>
   <div class="page-header">
@@ -48,8 +54,9 @@
   <thead>
     <tr>
       <th>#</th>
+      <th>Status</th>
       <th>Date Submitted</th>
-      <th>Date Recieved</th>
+      <th>Date Viewed</th>
       <th>Amount</th>
     </tr>
   </thead>
@@ -59,46 +66,45 @@
       <td>Dummy</td>
       <td>Dummy</td>
       <td>Dummy</td>
+      <td>Dummy</td>
     </tr>
   </tbody>
 </table>
 </div>
+<a href='#' onclick='betafunction()'>BETA: APPROVE ALL</a>
 </body>
 <script>
+
 function onLoad(){
 	if(!sessionStorage.user){
 		logout();
 	}
-	var data = new formData();
-	data.append("user", sessionStorage.user);
-	data.append("pass", sessionStorage.pass);
-	let xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			document.getElementById("toReplace").innerHTML = xhttp.responseText;
-		}
-	};
-	xhttp.open("GET", "GetListE", true);
-	xhttp.send(data);
-	
-	
-	let xhttp2 = new XMLHttpRequest();
-	xhttp2.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			document.getElementById("empmail").innerHTML = xhttp2.responseText;
-			document.getElementById("empname").innerHTML = sessionStorage.user;
-		}
-	};
-	xhttp2.open("GET", "GetUserInfo", true);
-	xhttp2.send(data);
+	document.getElementById("empname").innerHTML = sessionStorage.user;
+	document.getElementById("empmail").innerHTML = sessionStorage.email;
+	document.getElementById("toReplace").innerHTML = sessionStorage.table;
+    document.getElementById("HiddenID").value = sessionStorage.id;
 }
 function logout(){
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("pass");
     sessionStorage.removeItem("manager");
+    sessionStorage.removeItem("id");
+    sessionStorage.removeItem("email");
+    sessionStorage.clear();
+    
     window.location.href = 'Index.html';
   }
+function betafunction(){
+	alert("You clicked...");
+	let xhttp = new XMLHttpRequest();
+	xhttp.onreadystatechange = function() {
+		console.log(this.readyState);
+		if (this.readyState === 4 && this.status === 200){
+			alert("Completed");
+		}
+	};
+	xhttp.open("GET", "Approve", true);
+	xhttp.send();
+}
 </script>
 </html>

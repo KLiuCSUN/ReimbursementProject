@@ -26,27 +26,19 @@
 	<url-pattern>/Register</url-pattern>
 </servlet-mapping>
 <servlet>
-  <servlet-name>GetListE</servlet-name>
-<servlet-class>P L A C E H O L D E R</servlet-class>
+  <servlet-name>Submit</servlet-name>
+<servlet-class>com.broovin.servlets.Submit</servlet-class>
 </servlet>
 <servlet-mapping>
-	<servlet-name>GetListE</servlet-name>
-	<url-pattern>/GetListE</url-pattern>
+	<servlet-name>Submit</servlet-name>
+	<url-pattern>/Submit</url-pattern>
 </servlet-mapping>
 <servlet>
-  <servlet-name>GetListM</servlet-name>
-<servlet-class>P L A C E H O L D E R</servlet-class>
+  <servlet-name>Approve</servlet-name>
+<servlet-class>com.broovin.servlets.Approve</servlet-class>
 </servlet>
 <servlet-mapping>
-	<servlet-name>GetListM</servlet-name>
-	<url-pattern>/GetListM</url-pattern>
-</servlet-mapping>
-<servlet>
-  <servlet-name>GetUserInfo</servlet-name>
-<servlet-class>P L A C E H O L D E R</servlet-class>
-</servlet>
-<servlet-mapping>
-	<servlet-name>GetUserInfo</servlet-name>
-	<url-pattern>/GetUserInfo</url-pattern>
+	<servlet-name>Approve</servlet-name>
+	<url-pattern>/Approve</url-pattern>
 </servlet-mapping>
 </web-app>

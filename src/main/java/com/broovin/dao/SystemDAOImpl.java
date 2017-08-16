@@ -1,8 +1,10 @@
 package com.broovin.dao;
 
+import java.math.BigDecimal;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Date;  
 
 import com.broovin.beans.Reimbursement;
 import com.broovin.beans.User;
@@ -11,7 +13,7 @@ import oracle.jdbc.driver.OracleDriver;
 
 public class SystemDAOImpl implements SystemDAO{
 	@Override
-	public boolean userLogin(String username, String password, String isManager) throws ClassNotFoundException {
+	public int userLogin(String username, String password, String isManager) throws ClassNotFoundException {
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
 		try(Connection conn = ConnectionUtil.getConnection()) {
@@ -23,10 +25,10 @@ public class SystemDAOImpl implements SystemDAO{
 			rs.next();
 			if(rs == null){
 				System.out.println(rs.getString("U_USERNAME"));
-            	return false;
+            	return 0;
             }
 			System.out.println(rs.getString("U_USERNAME"));
-			return true;
+			return Integer.parseInt(rs.getString("U_ID"));
 		} catch(SQLException e) {
 			e.printStackTrace();	
 		} finally { 
@@ -37,7 +39,7 @@ public class SystemDAOImpl implements SystemDAO{
         			try { rs.close(); } catch(SQLException e) { e.printStackTrace(); }
         		}
 		 }     
-		return false;
+		return 0;
 	}
 	@Override
 	public boolean register(String username, String password, String email) {
@@ -269,5 +271,149 @@ public class SystemDAOImpl implements SystemDAO{
         		} 
 		}
 		return null;
+	}
+	@Override
+	public String returnUserAsSession(String username, String password) {
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
+		String returnSession;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql = "SELECT * FROM USERS WHERE U_USERNAME = ? AND U_PASSWORD = ?" ;
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			pstmt.setString(2, password);
+			rs = pstmt.executeQuery();
+			
+			if(rs.next()) {
+				String u_username = rs.getString("U_USERNAME");
+				String u_password = rs.getString("U_PASSWORD");
+				String u_email = rs.getString("U_EMAIL");
+				int u_id = rs.getInt("U_ID");
+				returnSession = "sessionStorage.user = \'"+u_username+"\'; sessionStorage.pass = \'"+u_password+"\'; sessionStorage.email = \'"+u_email+"\'; sessionStorage.id = \'"+u_id+"\';";
+				return returnSession;	
+				} 
+			}catch (SQLException e) {
+			e.printStackTrace();
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+			if (rs != null) {
+        			try { rs.close(); } catch(SQLException e) { e.printStackTrace(); }
+        		} 
+		}
+		return null;
+	}
+	@Override
+	public List<String> returnRList(int userID, boolean isManager) {
+		System.out.println("REQUEST FROM ID: " + userID + "FOR REIMBURSEMENTS.");
+		List<String> reimbursement = new ArrayList<>();
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;		
+		try(Connection conn = ConnectionUtil.getConnection()){
+			String sql = "SELECT * FROM REIMBURSEMENTS WHERE U_ID_AUTHOR = ? ORDER BY R_ID";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, userID);
+			rs = pstmt.executeQuery();
+			String result;
+			if(isManager == true) {
+				while(rs.next()) {
+					int r_id = rs.getInt("R_ID");
+					int status = rs.getInt("RT_STATUS");
+					Date submitted = rs.getTimestamp("R_SUBMITTED");
+					Date resolved = rs.getTimestamp("R_RESOLVED");
+					BigDecimal amount = rs.getBigDecimal("R_AMOUNT");
+					String status2 = "";
+					switch(status) {
+					case(1): status2 = "Pending..."; break;
+					case(2): status2 = "Approved"; break;
+					case(3): status2 = "Denied."; break;
+					}
+					result = "<tr>"+
+						 "<th>"+r_id+"</th>"+ 
+						 "<td>"+status2+"</th>"+
+						 "<td>"+submitted+"</td>"+
+						 "<td>"+resolved+"</td>"+
+						 "<td>"+amount.toString()+"</td>"+
+						 "<td><a href=# onclick='approval("+r_id+", true)'>Approve</a>//<a href=# onclick='approval("+r_id+", false)'>Deny</a></td>"+
+						 "</tr>";
+					reimbursement.add(result);
+					}
+				return reimbursement;
+			}
+			if(isManager == false) {
+				while(rs.next()) {
+					System.out.println("got this far....");
+					int r_id = rs.getInt("R_ID");
+					int status = rs.getInt("RT_STATUS");
+					String status2 = "";
+					switch(status) {
+					case(1): status2 = "Pending..."; break;
+					case(2): status2 = "Approved"; break;
+					case(3): status2 = "Denied."; break;
+					}
+					Date submitted = rs.getTimestamp("R_SUBMITTED");
+					Date resolved = rs.getTimestamp("R_RESOLVED");
+					BigDecimal amount = rs.getBigDecimal("R_AMOUNT");
+					System.out.println(amount.toString());
+					result = "<tr>"+
+						 "<th>"+r_id+"</th>"+ 
+						 "<td>"+status2+"</th>"+
+						 "<td>"+submitted+"</td>"+
+						 "<td>"+resolved+"</td>"+
+						 "<td>"+amount.toString()+"</td>"+
+						 "</tr>";
+					reimbursement.add(result);
+				}
+				return reimbursement;
+			}
+		} catch(SQLException e) {
+			e.printStackTrace();
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+			if (rs != null) {
+        			try { rs.close(); } catch(SQLException e) { e.printStackTrace(); }
+        		}
+		 }     
+		return null;
+	}
+	public boolean submitFields(int userID, double amount, String desc) {
+		PreparedStatement pstmt = null;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql;
+			sql = "BEGIN PR_CREATE_REIMB(?, ?, ?); END;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setDouble(1, amount);
+			pstmt.setString(2, desc);
+			pstmt.setInt(3, userID);
+			pstmt.executeQuery();
+			return true;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+		 }
+	}
+	public boolean approveall() {
+		PreparedStatement pstmt = null;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql;
+			sql = "BEGIN BETA_APPROVE_ALL; END;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.executeQuery();
+			return true;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+		 }
 	}
 }
