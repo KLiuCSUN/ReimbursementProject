@@ -286,10 +286,14 @@ public class SystemDAOImpl implements SystemDAO{
 			
 			if(rs.next()) {
 				String u_username = rs.getString("U_USERNAME");
+				String u_firstname = rs.getString("U_FIRSTNAME");
+				String u_lastname = rs.getString("U_LASTNAME");
 				String u_password = rs.getString("U_PASSWORD");
 				String u_email = rs.getString("U_EMAIL");
 				int u_id = rs.getInt("U_ID");
-				returnSession = "sessionStorage.user = \'"+u_username+"\'; sessionStorage.pass = \'"+u_password+"\'; sessionStorage.email = \'"+u_email+"\'; sessionStorage.id = \'"+u_id+"\';";
+				returnSession = "sessionStorage.user = \'"+u_username+"\'; sessionStorage.pass = \'"+u_password
+						+"\'; sessionStorage.email = \'"+u_email+"\'; sessionStorage.id = \'"+u_id+"\'; sessionStorage.fname = \'" 
+						+ u_firstname + "\'; sessionStorage.lname = \'" + u_lastname + "\';";
 				return returnSession;	
 				} 
 			}catch (SQLException e) {
@@ -306,14 +310,20 @@ public class SystemDAOImpl implements SystemDAO{
 	}
 	@Override
 	public List<String> returnRList(int userID, boolean isManager) {
-		System.out.println("REQUEST FROM ID: " + userID + "FOR REIMBURSEMENTS.");
+		System.out.println("REQUEST FROM ID: " + userID + " FOR REIMBURSEMENTS.");
 		List<String> reimbursement = new ArrayList<>();
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;		
 		try(Connection conn = ConnectionUtil.getConnection()){
-			String sql = "SELECT * FROM REIMBURSEMENTS WHERE U_ID_AUTHOR = ? ORDER BY R_ID";
-			pstmt = conn.prepareStatement(sql);
-			pstmt.setInt(1, userID);
+			String sql = "SELECT * FROM REIMBURSEMENTS";
+			if(!isManager) {
+				sql=sql+" WHERE U_ID_AUTHOR = ? ORDER BY R_ID";
+				pstmt = conn.prepareStatement(sql);
+				pstmt.setInt(1, userID);
+			} else {
+				sql = sql + " ORDER BY R_ID";
+				pstmt = conn.prepareStatement(sql);
+			}
 			rs = pstmt.executeQuery();
 			String result;
 			if(isManager == true) {
@@ -335,7 +345,7 @@ public class SystemDAOImpl implements SystemDAO{
 						 "<td>"+submitted+"</td>"+
 						 "<td>"+resolved+"</td>"+
 						 "<td>"+amount.toString()+"</td>"+
-						 "<td><a href=# onclick='approval("+r_id+", true)'>Approve</a>//<a href=# onclick='approval("+r_id+", false)'>Deny</a></td>"+
+						 "<td><a href=# onclick='approval("+r_id+", true)'>Approve</a> or <a href=# onclick='approval("+r_id+", false)'>Deny</a></td>"+
 						 "</tr>";
 					reimbursement.add(result);
 					}
@@ -410,6 +420,62 @@ public class SystemDAOImpl implements SystemDAO{
 		} catch(SQLException e) {
 			e.printStackTrace();
 			return false;
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+		 }
+	}
+	public boolean denyall() {
+		PreparedStatement pstmt = null;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql;
+			sql = "BEGIN BETA_DENY_ALL; END;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.executeQuery();
+			return true;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+		 }
+	}
+	public boolean statuschange(String RID, String UID, int status) {
+		PreparedStatement pstmt = null;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql;
+			sql = "BEGIN PR_APPROVE_REIMB(?,?,?); END;";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setInt(1, Integer.parseInt(RID));
+			pstmt.setInt(2, Integer.parseInt(UID));
+			pstmt.setInt(3, status);
+			pstmt.executeQuery();
+			return true;
+		} catch(SQLException e) {
+			e.printStackTrace();
+			return false;
+		} finally { 
+			if (pstmt != null) {
+				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 
+				}
+		 }
+	}
+	public void addname(String fname, String lname, String Username, String Password) {
+		PreparedStatement pstmt = null;
+		try(Connection conn = ConnectionUtil.getConnection()) {
+			String sql;
+			sql = "UPDATE USERS SET U_FIRSTNAME = ?, U_LASTNAME = ? WHERE U_USERNAME = ? AND U_PASSWORD = ?";
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, fname);
+			pstmt.setString(2, lname);
+			pstmt.setString(3, Username);
+			pstmt.setString(4, Password);
+			pstmt.executeQuery();
+		} catch(SQLException e) {
+			e.printStackTrace();
 		} finally { 
 			if (pstmt != null) {
 				try { pstmt.close(); } catch(SQLException e) { e.printStackTrace(); } 

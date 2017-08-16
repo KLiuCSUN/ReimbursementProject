@@ -41,4 +41,20 @@
 	<servlet-name>Approve</servlet-name>
 	<url-pattern>/Approve</url-pattern>
 </servlet-mapping>
+<servlet>
+  <servlet-name>Deny</servlet-name>
+<servlet-class>com.broovin.servlets.Deny</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>Deny</servlet-name>
+	<url-pattern>/Deny</url-pattern>
+</servlet-mapping>
+<servlet>
+  <servlet-name>Manage</servlet-name>
+<servlet-class>com.broovin.servlets.Manage</servlet-class>
+</servlet>
+<servlet-mapping>
+	<servlet-name>Manage</servlet-name>
+	<url-pattern>/Manage</url-pattern>
+</servlet-mapping>
 </web-app>

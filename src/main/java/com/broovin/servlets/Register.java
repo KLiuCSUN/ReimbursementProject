@@ -22,6 +22,9 @@ public class Register extends HttpServlet{
 		String username = request.getParameter("user1");
 		String pass = request.getParameter("pass1");
 		String email = request.getParameter("email");
+		String fname = request.getParameter("fname");
+		String lname = request.getParameter("lname");
+		dao.addname(fname, lname, username, pass);
 		out.write("<body onload='myFunction()'><a href='#' onclick='myFunction()'>Redirecting...Click here to continue if nothing happens</a></body>\n<script>function myFunction(){\n");
 		boolean success = dao.register(username, pass, email);
 		if(success) {

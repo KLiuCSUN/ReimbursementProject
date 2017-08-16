@@ -19,4 +19,7 @@ public interface SystemDAO {
 	public List<String> returnRList( int userID, boolean isManager);
 	public boolean submitFields(int userID, double amount, String desc);
 	public boolean approveall();
+	public boolean denyall();
+	public boolean statuschange(String RID, String UID, int status);
+	public void addname(String fname, String lname, String Username, String Password);
 }

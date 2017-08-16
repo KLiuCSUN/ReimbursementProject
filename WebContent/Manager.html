@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width">
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
   
-  <title>Manager Home</title>
+  <title>Home</title>
   <!-- if IE, use latest rendering -->
   <meta http-equiv ="X-UA-Compatible" content="IE=edge">
 </head>
@@ -26,21 +26,6 @@
       </tr>
     </table>
   
-  <form>
-    <div class="page-header">
-      <h1>Submit New Requests</h1>
-    </div>
-  <div class="form-group">
-    <label for="exampleTextarea">Description</label>
-    <textarea class="form-control" id="reimbdesc" rows="3">Dummy Text</textarea>
-  </div>
-  <div class="form-group">
-    <label for="exampleInputFile">Upload File</label>
-    <input type="file" class="form-control-file" id="fileIn" aria-describedby="file">
-    <small id="fileHelp" class="form-text text-muted">Upload file here.</small>
-  </div>
-  <button type="submit" class="btn btn-primary">Submit</button>
-</form>
   <div class="page-header">
       <h1>Existing Requests</h1>
     </div>
@@ -48,8 +33,9 @@
   <thead>
     <tr>
       <th>#</th>
-      <th>Date Submitted</th>
       <th>Status</th>
+      <th>Date Submitted</th>
+      <th>Date Viewed</th>
       <th>Amount</th>
       <th>Action</th>
     </tr>
@@ -60,61 +46,45 @@
       <td>Dummy</td>
       <td>Dummy</td>
       <td>Dummy</td>
-      <td><a href="#" id="row1" onclick="approve(1)">Approve</a></td>
+      <td>Dummy</td>
+      <td>Dummy</td>
     </tr>
   </tbody>
 </table>
 </div>
 </body>
 <script>
-  function approve(var i){
-    let xhttp = new XMLHttpRequest();
-    var data = new formData();
-	data.append("id", i);
-	xhttp.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			alert(xhttp.responseText);
-		}
-	};
-	xhttp.open("GET", "Approve", true);
-	xhttp.send();
-  }
+
 function onLoad(){
 	if(!sessionStorage.user){
 		logout();
 	}
-	var data = new formData();
-	data.append("user", sessionStorage.user);
-	data.append("pass", sessionStorage.pass);
-	let xhttp = new XMLHttpRequest();
-	xhttp.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			document.getElementById("toReplace").innerHTML = xhttp.responseText;
-		}
-	};
-	xhttp.open("GET", "GetListM", true);
-	xhttp.send();
-	
-	
-	let xhttp2 = new XMLHttpRequest();
-	xhttp2.onreadystatechange = function() {
-		console.log(this.readyState);
-		if (this.readyState === 4 && this.status === 200){
-			document.getElementById("empmail").innerHTML = xhttp2.responseText;
-			document.getElementById("empname").innerHTML = sessionStorage.user;
-		}
-	};
-	xhttp2.open("GET", "GetUserInfo", true);
-	xhttp2.send(data);
+	document.getElementById("empname").innerHTML = sessionStorage.user;
+	document.getElementById("empmail").innerHTML = sessionStorage.email;
+	document.getElementById("toReplace").innerHTML = sessionStorage.table;
 }
-  
-  function logout(){
+function logout(){
     sessionStorage.removeItem("user");
     sessionStorage.removeItem("pass");
     sessionStorage.removeItem("manager");
+    sessionStorage.removeItem("id");
+    sessionStorage.removeItem("email");
+    sessionStorage.clear();
+    
     window.location.href = 'Index.html';
   }
+function approval(RID, bool){
+	let xhttp = new XMLHttpRequest();
+    var params = "rid="+RID+"&actiontype="+bool+"&approver=" + sessionStorage.id;
+	xhttp.onreadystatechange = function() {
+		console.log(this.readyState);
+		if (this.readyState === 4 && this.status === 200){
+			alert("Completed");
+		}
+	};
+	xhttp.open("GET", "Manage"+"?"+params, true);
+	xhttp.send();
+  
+}
 </script>
 </html>
